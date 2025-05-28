@@ -220,7 +220,7 @@ function App() {
 
   return (
     <ErrorBoundary>
-      <div className="bg-teal-50">
+      <div className="bg-gray-50">
         <nav className="fixed top-0 left-0 w-full bg-teal-600 text-white shadow-md z-10">
           <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
             <h1 className="text-xl font-semibold">Dog Adoption</h1>
