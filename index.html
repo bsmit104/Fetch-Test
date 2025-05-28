@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fetch Dog Adoption</title>
+  <link rel="icon" href="data:,">
+  <script src="https://cdn.jsdelivr.net/npm/react@18/umd/react.development.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.25.6/babel.min.js"></script>
+</head>
+<body>
+  <div id="root" class="min-h-screen bg-gray-50"></div>
+  <script type="text/babel">
+    console.log('Babel script running');
+    const { useState } = React;
+
+    const API_BASE = 'https://frontend-take-home-service.fetch.com';
+
+    function Login({ onLogin }) {
+      const [name, setName] = useState('');
+      const [email, setEmail] = useState('');
+      const [error, setError] = useState('');
+
+      const handleLogin = async (e) => {
+        e.preventDefault();
+        try {
+          await axios.post(`${API_BASE}/auth/login`, { name, email }, { withCredentials: true });
+          onLogin();
+        } catch (err) {
+          setError('Login failed. Please try again.');
+          console.error('Login error:', err);
+        }
+      };
+
+      return (
+        <div class="flex items-center justify-center min-h-screen bg-gray-50">
+          <div class="bg-white p-10 border-2 border-teal-300 rounded-xl shadow-md w-full max-w-lg">
+            <h1 class="text-3xl font-semibold mb-8 text-center text-teal-700">Dog Adoption Portal</h1>
+            <form onSubmit={handleLogin} class="flex flex-col gap-6">
+              <div>
+                <label class="block text-sm font-medium text-gray-800">Your Name</label>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  class="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  required
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-800">Your Email</label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  class="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  required
+                />
+              </div>
+              {error && <p class="text-red-600 text-sm text-center">{error}</p>}
+              <button
+                type="submit"
+                class="w-full bg-teal-500 text-white py-3 px-4 rounded-lg hover:bg-teal-600 transition"
+              >
+                Sign In
+              </button>
+            </form>
+          </div>
+        </div>
+      );
+    }
+
+    function App() {
+      const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+      const handleLogin = () => {
+        setIsAuthenticated(true);
+      };
+
+      if (!isAuthenticated) {
+        return <Login onLogin={handleLogin} />;
+      }
+
+      return (
+        <div class="max-w-7xl mx-auto p-6 bg-gray-50">
+          <h1 class="text-3xl font-semibold text-teal-700">Dog Database</h1>
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
