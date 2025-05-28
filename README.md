@@ -11,6 +11,9 @@ A web application to help find shelter dogs their forever homes. Built with Reac
 - Get matched with your perfect dog
 - Responsive design for all devices
 
+## Demo
+![Demo](assets/fetchDatabaseDemo.gif)
+
 ## Local Development Setup
 
 To run this project locally:
