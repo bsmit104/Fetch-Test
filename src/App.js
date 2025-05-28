@@ -3,6 +3,69 @@
 const { useState, useEffect, useCallback } = React;
 const API_BASE = 'https://frontend-take-home-service.fetch.com';
 
+function Pagination({ currentPage, totalPages, onPageChange }) {
+  const getPageNumbers = () => {
+    const pages = [];
+    const rangeStart = Math.max(0, currentPage - 3);
+    const rangeEnd = Math.min(totalPages - 1, currentPage + 3);
+
+    // Always show first page
+    if (rangeStart > 0) {
+      pages.push(0);
+      if (rangeStart > 1) pages.push('...');
+    }
+
+    // Add pages in range
+    for (let i = rangeStart; i <= rangeEnd; i++) {
+      pages.push(i);
+    }
+
+    // Always show last page
+    if (rangeEnd < totalPages - 1) {
+      if (rangeEnd < totalPages - 2) pages.push('...');
+      pages.push(totalPages - 1);
+    }
+
+    return pages;
+  };
+
+  return (
+    <div className="flex items-center justify-center space-x-2">
+      <button
+        onClick={() => onPageChange(currentPage - 1)}
+        disabled={currentPage === 0}
+        className="px-3 py-1 bg-teal-500 text-white rounded-lg disabled:bg-gray-200 hover:bg-teal-600 transition"
+      >
+        Previous
+      </button>
+      {getPageNumbers().map((pageNum, index) => (
+        pageNum === '...' ? (
+          <span key={`ellipsis-${index}`} className="px-3 py-1">...</span>
+        ) : (
+          <button
+            key={pageNum}
+            onClick={() => onPageChange(pageNum)}
+            className={`px-3 py-1 rounded-lg transition ${
+              currentPage === pageNum
+                ? 'bg-teal-600 text-white'
+                : 'bg-white text-teal-600 hover:bg-teal-100'
+            }`}
+          >
+            {pageNum + 1}
+          </button>
+        )
+      ))}
+      <button
+        onClick={() => onPageChange(currentPage + 1)}
+        disabled={currentPage >= totalPages - 1}
+        className="px-3 py-1 bg-teal-500 text-white rounded-lg disabled:bg-gray-200 hover:bg-teal-600 transition"
+      >
+        Next
+      </button>
+    </div>
+  );
+}
+
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [breeds, setBreeds] = useState([]);
@@ -292,22 +355,12 @@ function App() {
                   />
                 ))}
               </div>
-              <div className="flex justify-between items-center mb-6">
-                <button
-                  onClick={() => setPage((p) => Math.max(0, p - 1))}
-                  disabled={!prev || isLoadingDogs}
-                  className="px-6 py-2 bg-teal-500 text-white rounded-lg disabled:bg-gray-200 hover:bg-teal-600 transition"
-                >
-                  Previous
-                </button>
-                <span className="text-gray-600">Page {page + 1}</span>
-                <button
-                  onClick={() => setPage((p) => p + 1)}
-                  disabled={!next || isLoadingDogs}
-                  className="px-6 py-2 bg-teal-500 text-white rounded-md disabled:bg-gray-200 hover:bg-teal-600 transition"
-                >
-                  Next
-                </button>
+              <div className="mb-6">
+                <Pagination
+                  currentPage={page}
+                  totalPages={Math.ceil(total / 10)}
+                  onPageChange={setPage}
+                />
               </div>
               <div className="bg-white p-8 border border-teal-200 rounded-lg shadow-sm">
                 <h2 className="text-2xl font-semibold text-teal-700 mb-4">Your Favorites</h2>
