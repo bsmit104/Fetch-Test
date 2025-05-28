@@ -5,160 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Fetch Dog Adoption</title>
   <link rel="icon" href="data:,">
-  <script src="https://cdn.jsdelivr.net/npm/react@18/umd/react.development.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.development.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.development.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.development.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios@1.7.2/dist/axios.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.25.6/babel.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js"></script>
 </head>
 <body>
   <div id="root" class="min-h-screen bg-gray-50"></div>
-  <script type="text/babel">
-    console.log('Babel script running');
-    const { useState, useEffect } = React;
-
-    const API_BASE = 'https://frontend-take-home-service.fetch.com';
-
-    function Login({ onLogin }) {
-      const [name, setName] = useState('');
-      const [email, setEmail] = useState('');
-      const [error, setError] = useState('');
-
-      const handleLogin = async (e) => {
-        e.preventDefault();
-        try {
-          await axios.post(`${API_BASE}/auth/login`, { name, email }, { withCredentials: true });
-          onLogin();
-        } catch (err) {
-          setError('Login failed. Please try again.');
-          console.error('Login error:', err);
-        }
-      };
-
-      return (
-        <div class="flex items-center justify-center min-h-screen bg-gray-50">
-          <div class="bg-white p-10 border-2 border-teal-300 rounded-xl shadow-md w-full max-w-lg">
-            <h1 class="text-3xl font-semibold mb-8 text-center text-teal-700">Dog Adoption Portal</h1>
-            <form onSubmit={handleLogin} class="flex flex-col gap-6">
-              <div>
-                <label class="block text-sm font-medium text-gray-800">Your Name</label>
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  class="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
-                  required
-                />
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-800">Your Email</label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  class="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
-                  required
-                />
-              </div>
-              {error && <p class="text-red-600 text-sm text-center">{error}</p>}
-              <button
-                type="submit"
-                class="w-full bg-teal-500 text-white py-3 px-4 rounded-lg hover:bg-teal-600 transition"
-              >
-                Sign In
-              </button>
-            </form>
-          </div>
-        </div>
-      );
-    }
-
-    function DogCard({ dog }) {
-      return (
-        <div class="bg-white p-6 border border-teal-200 rounded-lg shadow-sm">
-          <img
-            src={dog.img}
-            alt={dog.name}
-            class="w-40 h-40 object-cover rounded-lg mb-4 mx-auto"
-          />
-          <h3 class="text-xl font-medium text-gray-800">{dog.name}</h3>
-          <p class="text-gray-700">Breed: {dog.breed}</p>
-          <p class="text-gray-700">Age: {dog.age} years</p>
-          <p class="text-gray-700">Zip Code: {dog.zip_code}</p>
-        </div>
-      );
-    }
-
-    function App() {
-      const [isAuthenticated, setIsAuthenticated] = useState(false);
-      const [dogs, setDogs] = useState([]);
-
-      useEffect(() => {
-        const fetchDogs = async () => {
-          try {
-            const response = await axios.get(`${API_BASE}/dogs/search`, {
-              params: { size: 10 },
-              withCredentials: true,
-            });
-            const { resultIds } = response.data;
-            const dogResponse = await axios.post(`${API_BASE}/dogs`, resultIds, { withCredentials: true });
-            setDogs(dogResponse.data);
-          } catch (err) {
-            console.error('Failed to fetch dogs:', err);
-          }
-        };
-        if (isAuthenticated) fetchDogs();
-      }, [isAuthenticated]);
-
-      const handleLogin = () => {
-        setIsAuthenticated(true);
-      };
-
-      const handleLogout = async () => {
-        try {
-          await axios.post(`${API_BASE}/auth/logout`, {}, { withCredentials: true });
-          setIsAuthenticated(false);
-          setDogs([]);
-        } catch (err) {
-          console.error('Error in logging out:', err);
-        }
-      };
-
-      if (!isAuthenticated) {
-        return <Login onLogin={handleLogin} />;
-      }
-
-      return (
-        <div class="bg-gray-50">
-          <nav class="fixed top-0 left-0 w-full bg-teal-600 text-white shadow-md z-10">
-            <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-              <h1 class="text-xl font-semibold">Dog Adoption</h1>
-              <div class="flex space-x-4">
-                <a href="#" class="hover:text-teal-200 transition">About</a>
-                <a href="#" class="hover:text-teal-200 transition">Contact</a>
-                <button
-                  onClick={handleLogout}
-                  class="bg-gray-600 text-white px-4 py-1 rounded-lg hover:bg-gray-700 transition"
-                >
-                  Sign Out
-                </button>
-              </div>
-            </div>
-          </nav>
-          <div class="max-w-7xl mx-auto p-6 pt-16">
-            <h1 class="text-3xl font-semibold text-teal-700 mb-8">Find Your New Family Member!</h1>
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-              {dogs.map((dog) => (
-                <DogCard key={dog.id} dog={dog} />
-              ))}
-            </div>
-          </div>
-        </div>
-      );
-    }
-
-    const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(<App />);
-  </script>
+  
+  <script type="text/babel" src="src/DogCard.js"></script>
+  <script type="text/babel" src="src/Login.js"></script>
+  <script type="text/babel" src="src/App.js"></script>
 </body>
 </html>

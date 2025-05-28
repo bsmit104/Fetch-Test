@@ -1,2 +1,3 @@
-# Fetch-Test
-Programming test for Fetch. A database of shelter dogs
+# Fetch Dog Adoption
+
+A web application to help find shelter dogs their forever homes. Built with React and Tailwind CSS.
