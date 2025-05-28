@@ -23,6 +23,9 @@ To run this project locally:
 3. Use the Live Server extension (or equivalent) to start a local server
 4. The site will automatically open in your default browser
 
+Or click this link:
+https://bsmit104.github.io/Fetch-Test/
+
 ## Project Structure
 
 - `src/` - Source code
